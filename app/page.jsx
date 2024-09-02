@@ -3,9 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useQueryState } from "./useQueryState";
+import { useDebounceValue } from "./useDebounceValue";
+import { useApiKeyRequired } from "./useApiKeyRequired";
 
 export default function Home() {
   const [query, setQuery] = useQueryState("s", "");
+  const debouncedValue = useDebounceValue(query, 300);
+  useApiKeyRequired();
 
   return (
     <div className="flex flex-col gap-4 py-8 max-w-4xl m-auto px-4">
@@ -34,6 +38,7 @@ export default function Home() {
               />
             </svg>
           </label>
+          <p>{debouncedValue}</p>
         </fieldset>
       </header>
 

@@ -7,6 +7,15 @@ export const useQueryState = (key, initialValue) => {
   useEffect(() => {
     const newURL = new URL(window.location);
     const params = newURL.searchParams;
+
+    if (params.has(key)) {
+      setQueryState(params.get(key));
+    }
+  }, [key, initialValue]);
+
+  useEffect(() => {
+    const newURL = new URL(window.location);
+    const params = newURL.searchParams;
     console.log("params", params);
 
     if (!queryState) {

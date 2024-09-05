@@ -16,7 +16,7 @@ export const useQueryState = (key, initialValue) => {
   useEffect(() => {
     const newURL = new URL(window.location);
     const params = newURL.searchParams;
-    console.log("params", params);
+    // console.log("params", params);
 
     if (!queryState) {
       params.delete(key);
@@ -25,7 +25,7 @@ export const useQueryState = (key, initialValue) => {
     }
 
     window.history.replaceState(null, "", newURL.toString());
-    console.log("newURL", newURL);
+    // console.log("newURL", newURL);
   }, [key, queryState]);
 
   return [queryState, setQueryState];

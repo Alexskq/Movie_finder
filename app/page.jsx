@@ -5,10 +5,12 @@ import { useState } from "react";
 import { useQueryState } from "./useQueryState";
 import { useDebounceValue } from "./useDebounceValue";
 import { useApiKeyRequired } from "./useApiKeyRequired";
+import { useMovieQuery } from "./useMovieQuery";
 
 export default function Home() {
   const [query, setQuery] = useQueryState("s", "");
-  const debouncedValue = useDebounceValue(query, 300);
+  const debouncedValue = useDebounceValue(query, 1000);
+  const { data, error, isLoading } = useMovieQuery(debouncedValue);
   useApiKeyRequired();
 
   return (
@@ -38,11 +40,44 @@ export default function Home() {
               />
             </svg>
           </label>
-          <p>{debouncedValue}</p>
+          {/* <p>{movieQuery}</p> */}
         </fieldset>
       </header>
 
-      <main className="flex justify-center items-center"></main>
+      <main className="flex justify-center items-center">
+        {error ? <p>Error : {error.message}</p> : null}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 overflow-hidden">
+          {isLoading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex flex-col gap-4 ">
+                  <div className="skeleton w-full h-full object-cover rounded-md shadow aspect-ratio-[2/3]" />
+                  <div>
+                    <p className="skeleton text-sm font-medium h-5 w-1/2 "></p>
+                    <p className="skeleton text-sm text-neutral-content font-medium h-4 w-1/3"></p>
+                  </div>
+                </div>
+              ))
+            : null}
+
+          {data?.Search?.length > 0
+            ? data.Search.map((movie) => (
+                <div key={movie.imdbID} className="flex flex-col gap-4">
+                  <img
+                    src={movie.Poster}
+                    alt={`${movie.Title}'s poster`}
+                    className="w-full h-full object-cover rounded-md shadow aspect-ratio-[2/3]"
+                  />
+                  <div>
+                    <p className="text-sm font-medium">{movie.Title}</p>
+                    <p className="text-sm text-neutral-content font-medium">
+                      {movie.Year} | {movie.Type}
+                    </p>
+                  </div>
+                </div>
+              ))
+            : null}
+        </div>
+      </main>
     </div>
   );
 }
